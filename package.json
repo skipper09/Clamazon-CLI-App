@@ -1,0 +1,23 @@
+{
+  "name": "clamazon-cli-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "clamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skipper09/Clamazon-CLI-App.git"
+  },
+  "author": "Sarah Payne",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skipper09/Clamazon-CLI-App/issues"
+  },
+  "homepage": "https://github.com/skipper09/Clamazon-CLI-App#readme",
+  "dependencies": {
+    "inquirer": "^3.2.0",
+    "mysql": "^2.13.0"
+  }
+}
