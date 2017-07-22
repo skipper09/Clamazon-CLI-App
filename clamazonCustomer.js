@@ -16,6 +16,10 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw err;
+    console.log("-----------------------------------")
+    console.log("Welcome to C L A M A Z O N")
+    console.log("-----------------------------------")
+    console.log("Available products: ")
     queryClamazonProducts();
 });
 
@@ -45,7 +49,6 @@ var idPrompt = function() {
             } else {
                 return false;
             }
-
         }
     }).then(function(answer) {
         connection.query("SELECT * FROM products WHERE ?", {
