@@ -1,7 +1,5 @@
 # Clamazon-CLI-App
 
-## Clamazon Customer App
-
 The Clamazon Customer App is a node.js, javascript, and SQL based app accessible to users through a CLI. 
 
 It is modeled after a well known web-based retail giant that has a similar sounding name. 
@@ -28,7 +26,7 @@ On the manager side, users can:
 
 The SQL database is dynamically updated through user choices on the CLI.
 
-
+## Clamazon Customer App
 
 ![Image of clamazon customer app](http://i301.photobucket.com/albums/nn65/reversethis/Screen%20Shot%202017-07-22%20at%206.09.18%20PM.png)
 
