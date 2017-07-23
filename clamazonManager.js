@@ -31,7 +31,6 @@ var initialQueryManagerMenu = function() {
         } else if (answer.query === "Add to Inventory") {
             goFishin();
         } else if (answer.query === "Add New Product") {}
-
     })
 };
 
@@ -88,7 +87,6 @@ var goFishin = function() {
         inquirer.prompt({
             name: "addProduct",
             type: "list",
-            message: "Which product would you like to go fishin' for today?",
             choices: function(value) {
                 // console.log(res)
                 var choiceArray = [];
@@ -96,43 +94,46 @@ var goFishin = function() {
                     choiceArray.push(res[i].product_name);
                 }
                 return choiceArray;
-            }
+            },
+            message: "Which product would you like to go fishin' for today?"
         }).then(function(answer) {
             chosenItem = answer.addProduct;
-
-            connection.query("SELECT * FROM products WHERE ?", {product_name: answer.addProduct },
+            connection.query("SELECT * FROM products WHERE ?", { product_name: chosenItem },
                 function(err, res) {
                     chosenItemQuantity = res[0].stock_quantity;
                 })
-
-            inquirer.prompt({
-                name: "addQuantity",
-                type: "input",
-                message: "You have several hours to go fishin'. How many are you going to catch today?",
-                validate: function(value) {
-                    if (isNaN(value) == false) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            }).then(function(answer) {
-                var catchQuantity = parseInt(answer.addQuantity);
-                var updatedQuantity = chosenItemQuantity + catchQuantity;
-                connection.query("UPDATE products SET ? WHERE ?", [{
-                            stock_quantity: updatedQuantity
-                        },
-                        {
-                            product_name: chosenItem
-                        }
-                    ],
-                    function(err, res) {
-                        console.log("-----------------------------------");
-                        console.log("Wheh, what a long day! You've successfully updated your inventory of " + chosenItem + " to " + updatedQuantity)
-                        console.log("-----------------------------------");
-                        queryManagerMenu();
-                    })
-            });
+            addInventory();
         });
     });
 };
+
+var addInventory = function() {
+    inquirer.prompt({
+        name: "addQuantity",
+        type: "input",
+        message: "You have several hours to go fishin'. How many are you going to catch today?",
+        validate: function(value) {
+            if (isNaN(value) == false) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }).then(function(answer) {
+        var catchQuantity = parseInt(answer.addQuantity);
+        var updatedQuantity = chosenItemQuantity + catchQuantity;
+        connection.query("UPDATE products SET ? WHERE ?", [{
+                    stock_quantity: updatedQuantity
+                },
+                {
+                    product_name: chosenItem
+                }
+            ],
+            function(err, res) {
+                console.log("-----------------------------------");
+                console.log("Wheh, what a long day! You've successfully updated your inventory of " + chosenItem + " to " + updatedQuantity)
+                console.log("-----------------------------------");
+                queryManagerMenu();
+            })
+    });
+}
