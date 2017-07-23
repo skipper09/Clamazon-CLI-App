@@ -46,7 +46,7 @@ var queryManagerMenu = function() {
         } else if (answer.query === "Low Inventory") {
             lowInventory();
         } else if (answer.query === "Add to Inventory") {
-
+            goFishin();
         } else if (answer.query === "Add New Product") {}
     })
 };
@@ -88,7 +88,6 @@ var goFishin = function() {
             name: "addProduct",
             type: "list",
             choices: function(value) {
-                // console.log(res)
                 var choiceArray = [];
                 for (var i = 0; i < res.length; i++) {
                     choiceArray.push(res[i].product_name);
@@ -98,7 +97,8 @@ var goFishin = function() {
             message: "Which product would you like to go fishin' for today?"
         }).then(function(answer) {
             chosenItem = answer.addProduct;
-            connection.query("SELECT * FROM products WHERE ?", { product_name: chosenItem },
+            connection.query("SELECT * FROM products WHERE ?", 
+                { product_name: chosenItem },
                 function(err, res) {
                     chosenItemQuantity = res[0].stock_quantity;
                 })
@@ -131,9 +131,9 @@ var addInventory = function() {
             ],
             function(err, res) {
                 console.log("-----------------------------------");
-                console.log("Wheh, what a long day! You've successfully updated your inventory of " + chosenItem + " to " + updatedQuantity)
+                console.log("Wheh, what a long day! You've successfully updated your inventory of " + chosenItem + " from " + chosenItemQuantity + " to " + updatedQuantity)
                 console.log("-----------------------------------");
-                queryManagerMenu();
+                viewProducts();
             })
     });
 }
