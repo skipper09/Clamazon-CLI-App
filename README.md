@@ -34,6 +34,6 @@ The SQL database is dynamically updated through user choices on the CLI.
 
 ![Image of clamazon manager app](http://i301.photobucket.com/albums/nn65/reversethis/Screen%20Shot%202017-07-22%20at%2010.51.06%20PM_1.png)
 
-![Image of clamazon manager app](http://i301.photobucket.com/albums/nn65/reversethis/Screen%20Shot%202017-07-22%20at%2010.50.34%20PM.png)
+![Image of clamazon manager app](http://i301.photobucket.com/albums/nn65/reversethis/Screen%20Shot%202017-07-22%20at%2010.51.23%20PM.png)
 
 ![Image of clamazon manager app](http://i301.photobucket.com/albums/nn65/reversethis/Screen%20Shot%202017-07-22%20at%2010.51.37%20PM.png)
