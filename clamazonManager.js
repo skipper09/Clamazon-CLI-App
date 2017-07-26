@@ -14,14 +14,22 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw err;
-    initialQueryManagerMenu();
+    queryManagerMenu("initial");
 });
 
-var initialQueryManagerMenu = function() {
+function queryManagerMenu(toggle) {
+    var message = "";
+    
+    if (toggle === "initial") {
+        message = "Welcome to C L A M A Z O N Admin Services. What would you like to do?";
+    } else {
+        message = "What would you like to do now?";
+    }
+
     inquirer.prompt({
         name: "query",
         type: "list",
-        message: "Welcome to C L A M A Z O N Admin Services. What would you like to do?",
+        message: message,
         choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"]
     }).then(function(answer) {
         if (answer.query === "View Products for Sale") {
@@ -32,24 +40,8 @@ var initialQueryManagerMenu = function() {
             goFishin();
         } else if (answer.query === "Add New Product") {}
     })
-};
 
-var queryManagerMenu = function() {
-    inquirer.prompt({
-        name: "query",
-        type: "list",
-        message: "What would you like to do?",
-        choices: ["View Products for Sale", "Low Inventory", "Add to Inventory", "Add New Product"]
-    }).then(function(answer) {
-        if (answer.query === "View Products for Sale") {
-            viewProducts();
-        } else if (answer.query === "Low Inventory") {
-            lowInventory();
-        } else if (answer.query === "Add to Inventory") {
-            goFishin();
-        } else if (answer.query === "Add New Product") {}
-    })
-};
+}
 
 var viewProducts = function() {
     connection.query("SELECT * FROM products", function(err, res) {
@@ -97,8 +89,7 @@ var goFishin = function() {
             message: "Which product would you like to go fishin' for today?"
         }).then(function(answer) {
             chosenItem = answer.addProduct;
-            connection.query("SELECT * FROM products WHERE ?", 
-                { product_name: chosenItem },
+            connection.query("SELECT * FROM products WHERE ?", { product_name: chosenItem },
                 function(err, res) {
                     chosenItemQuantity = res[0].stock_quantity;
                 })
