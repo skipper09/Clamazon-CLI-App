@@ -10,111 +10,105 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "password",
+    password: "root",
     database: "clamazon_DB"
 });
 
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log("-----------------------------------")
-    console.log("Welcome to C L A M A Z O N")
-    console.log("-----------------------------------")
-    console.log("Available products: ")
-    queryClamazonProducts();
-});
+self = module.exports = {
 
-var queryClamazonProducts = function() {
-    connection.query("SELECT * FROM products", function(err, res) {
-        console.log("-----------------------------------")
-        for (var i = 0; i < res.length; i++) {
-            console.log(res[i].item_id + " | " 
-                + res[i].product_name + " | " 
-                + res[i].department_name + " | $" 
-                + res[i].price + " | " 
-                + res[i].stock_quantity);
-        }
-        console.log("-----------------------------------");
-        idPrompt();
-    });
-}
-
-var idPrompt = function() {
-    inquirer.prompt({
-        name: "id",
-        message: "What is the id number of the item you would like to buy?",
-        type: "input",
-        validate: function(value) {
-            if (isNaN(value) == false) {
-                return true;
-            } else {
-                return false;
+    queryClamazonProducts: function () {
+        connection.query("SELECT * FROM products", function (err, res) {
+            console.log("-----------------------------------")
+            for (var i = 0; i < res.length; i++) {
+                console.log(res[i].item_id + " | "
+                    + res[i].product_name + " | "
+                    + res[i].department_name + " | $"
+                    + res[i].price + " | "
+                    + res[i].stock_quantity);
             }
-        }
-    }).then(function(answer) {
-        connection.query("SELECT * FROM products WHERE ?", {
+            console.log("-----------------------------------");
+            self.idPrompt();
+        });
+    },
+
+    idPrompt: function () {
+        inquirer.prompt({
+            name: "id",
+            message: "What is the id number of the item you would like to buy?",
+            type: "input",
+            validate: function (value) {
+                if (isNaN(value) == false) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }).then(function (answer) {
+            connection.query("SELECT * FROM products WHERE ?", {
                 item_id: answer.id
             },
-            function(err, res) {
-                if (err) throw err;
-                chosenItem = res[0].product_name,
-                    chosenItemQuantity = res[0].stock_quantity,
-                    chosenItemPrice = res[0].price,
-                    quantityPrompt();
-            });
-    })
-}
+                function (err, res) {
+                    if (err) throw err;
+                    chosenItem = res[0].product_name,
+                        chosenItemQuantity = res[0].stock_quantity,
+                        chosenItemPrice = res[0].price,
+                        self.quantityPrompt();
+                });
+        })
+    },
 
-var quantityPrompt = function() {
-    inquirer.prompt({
-        name: "quantity",
-        message: "How many " + chosenItem + " would you like to purchase?",
-        type: "input",
-        validate: function(value) {
-            if (isNaN(value) == false) {
-                return true;
-            } else {
-                return false;
+    quantityPrompt: function () {
+        inquirer.prompt({
+            name: "quantity",
+            message: "How many " + chosenItem + " would you like to purchase?",
+            type: "input",
+            validate: function (value) {
+                if (isNaN(value) == false) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        }
-    }).then(function(answer) {
-        purchaseQuantity = answer.quantity
-        var total = answer.quantity * chosenItemPrice
-        updatedQuantity = chosenItemQuantity - answer.quantity
-        console.log("-----------------------------------");
-        console.log("Your total will be $" + total)
-        console.log("-----------------------------------");
-        queryConfirm();
-    });
-}
+        }).then(function (answer) {
+            purchaseQuantity = answer.quantity
+            var total = answer.quantity * chosenItemPrice
+            updatedQuantity = chosenItemQuantity - answer.quantity
+            console.log("-----------------------------------");
+            console.log("Your total will be $" + total)
+            console.log("-----------------------------------");
+            self.queryConfirm();
+        });
+    },
 
-var queryConfirm = function() {
-    inquirer.prompt({
-        name: "confirm",
-        type: "confirm",
-        message: "Confirm? Press enter to confirm your purchase"
-    }).then(function(answer) {
-        if (answer.confirm == true) {
-            if (purchaseQuantity <= chosenItemQuantity) {
-                connection.query("UPDATE products SET ? WHERE ?", [{
+    queryConfirm: function () {
+        inquirer.prompt({
+            name: "confirm",
+            type: "confirm",
+            message: "Confirm? Press enter to confirm your purchase"
+        }).then(function (answer) {
+            if (answer.confirm == true) {
+                if (purchaseQuantity <= chosenItemQuantity) {
+                    connection.query("UPDATE products SET ? WHERE ?", [{
 
-                            stock_quantity: updatedQuantity
-                        },
-                        {
-                            product_name: chosenItem
-                        }
+                        stock_quantity: updatedQuantity
+                    },
+                    {
+                        product_name: chosenItem
+                    }
                     ],
-                    function(err, res) {})
-                console.log("-----------------------------------");
-                console.log("Thank you for your business!")
-                queryClamazonProducts();
+                        function (err, res) { })
+                    console.log("-----------------------------------");
+                    console.log("Thank you for your business!")
+                    self.queryClamazonProducts();
+                } else {
+                    console.log("-----------------------------------");
+                    console.log("Sorry, insufficient quantity!")
+                    console.log("-----------------------------------");
+                    self.quantityPrompt();
+                }
             } else {
-                console.log("-----------------------------------");
-                console.log("Sorry, insufficient quantity!")
-                console.log("-----------------------------------");
-                quantityPrompt();
+                self.idPrompt()
             }
-        } else {
-            idPrompt()
-        }
-    })
+        })
+    }
 }
